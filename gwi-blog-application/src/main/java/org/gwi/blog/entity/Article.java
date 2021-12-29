@@ -42,9 +42,11 @@ public class Article {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Builder.Default
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate = LocalDateTime.now();
 
+    @Builder.Default
     @Column(name = "last_modification_date", nullable = false)
     private LocalDateTime lastModificationDate = LocalDateTime.now();
 
