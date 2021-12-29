@@ -1,0 +1,2 @@
+rootProject.name = 'gwi-blog'
+include 'gwi-blog-application'
