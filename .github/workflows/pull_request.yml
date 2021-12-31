@@ -41,5 +41,3 @@ jobs:
         working-directory: gwi-blog-react-ui
       - run: npm run build --if-present
         working-directory: gwi-blog-react-ui
-      - run: npm test
-        working-directory: gwi-blog-react-ui
