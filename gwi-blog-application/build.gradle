@@ -2,7 +2,10 @@ plugins {
     id 'java'
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
+    id 'com.palantir.docker' version '0.31.0'
 }
+
+version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -24,4 +27,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-test'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+docker {
+    name "${project.group}/${project.name}:${project.version}"
+    files bootJar.archiveFile
+    buildArgs(['JAR_FILE': "${bootJar.archiveFileName.get()}"])
 }
