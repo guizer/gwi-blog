@@ -23,3 +23,8 @@ jobs:
         uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
         with:
           arguments: docker -i
+      - name: Docker image push
+        run: |
+          echo ${{ secrets.DOCKERHUB_ACCESS_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker image tag gwi-blog/gwi-blog-application:1.0-SNAPSHOT guizer/gwi-blog-application:1.0-SNAPSHOT
+          docker image push guizer/gwi-blog-application:1.0-SNAPSHOT
