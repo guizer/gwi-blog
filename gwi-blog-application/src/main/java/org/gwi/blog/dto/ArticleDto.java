@@ -18,6 +18,7 @@ public class ArticleDto {
     private String content;
     private String publishedAt;
     private String lastModifiedAt;
+    private String imageUrl;
     private CategoryDto category;
     @Builder.Default
     private List<TagDto> tags = new ArrayList<>();

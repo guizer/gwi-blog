@@ -50,6 +50,12 @@ public class Article {
     @Column(name = "last_modified_at", nullable = false)
     private LocalDateTime lastModifiedAt = LocalDateTime.now();
 
+    @Column(name = "author")
+    private String author;
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -62,8 +68,6 @@ public class Article {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    private String author;
-
     public ArticleDto convertToDto() {
         return ArticleDto.builder()
             .id(this.id)
@@ -71,6 +75,7 @@ public class Article {
             .content(this.content)
             .publishedAt(this.publishedAt.format(DateTimeFormatter.ISO_DATE_TIME))
             .lastModifiedAt(this.lastModifiedAt.format(DateTimeFormatter.ISO_DATE_TIME))
+            .imageUrl(this.imageUrl)
             .category(this.category.convertToDto())
             .tags(this.tags.stream().map(Tag::convertToDto).toList())
             .author(this.author)

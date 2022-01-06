@@ -10,6 +10,21 @@ header a {
   padding: 20px 0;
 }
 
+article {
+  margin: 50px 0;
+  padding: 25px 0;
+  border-top: 1px solid silver;
+  border-bottom: 1px solid silver;
+}
+
+.post-image img {
+  width: 100%;
+}
+
+.publication-date {
+  color: gray;
+}
+
 .footer {
   background-color: rgb(230, 230, 230);
   text-align: center;
