@@ -7,7 +7,11 @@ const Home: FC = () => {
   const articlesClient = useArticleClient();
   useEffect(() => {
     if (articlesClient) {
-      articlesClient.getArticles().then(setArticles);
+      articlesClient
+        .getArticles()
+        .then(setArticles)
+        // eslint-disable-next-line no-console
+        .catch((error) => console.log(error));
     }
   }, [articlesClient]);
   return articles ? <ArticlesDisplay articles={articles?.articles} /> : null;
