@@ -43,12 +43,12 @@ public class Article {
     private String content;
 
     @Builder.Default
-    @Column(name = "creation_date", nullable = false)
-    private LocalDateTime creationDate = LocalDateTime.now();
+    @Column(name = "published_at", nullable = false)
+    private LocalDateTime publishedAt = LocalDateTime.now();
 
     @Builder.Default
-    @Column(name = "last_modification_date", nullable = false)
-    private LocalDateTime lastModificationDate = LocalDateTime.now();
+    @Column(name = "last_modified_at", nullable = false)
+    private LocalDateTime lastModifiedAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -69,8 +69,8 @@ public class Article {
             .id(this.id)
             .title(this.title)
             .content(this.content)
-            .creationDate(this.creationDate.format(DateTimeFormatter.ISO_DATE_TIME))
-            .lastModificationDate(this.lastModificationDate.format(DateTimeFormatter.ISO_DATE_TIME))
+            .publishedAt(this.publishedAt.format(DateTimeFormatter.ISO_DATE_TIME))
+            .lastModifiedAt(this.lastModifiedAt.format(DateTimeFormatter.ISO_DATE_TIME))
             .category(this.category.convertToDto())
             .tags(this.tags.stream().map(Tag::convertToDto).toList())
             .author(this.author)

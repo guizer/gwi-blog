@@ -41,14 +41,14 @@ public class TestArticleService {
 
     @Test
     public void testGetArticleReturnArticleWhenArticleExist() {
-        LocalDateTime creationDate = LocalDateTime.now();
+        LocalDateTime publicationDate = LocalDateTime.now();
         Article article = Article.builder()
             .id(1)
             .category(new Category(1, "test"))
             .title("title")
             .content("content")
-            .creationDate(creationDate)
-            .lastModificationDate(creationDate)
+            .publishedAt(publicationDate)
+            .lastModifiedAt(publicationDate)
             .build();
         Mockito.when(articleRepository.findById(1)).thenReturn(Optional.of(article));
 
@@ -66,14 +66,14 @@ public class TestArticleService {
 
     @Test
     public void testDeleteArticleWhenArticleExist() {
-        LocalDateTime creationDate = LocalDateTime.now();
+        LocalDateTime publicationDate = LocalDateTime.now();
         Article articleToRemove = Article.builder()
             .id(1)
             .title("title")
             .content("content")
             .category(new Category(1, "test"))
-            .creationDate(creationDate)
-            .lastModificationDate(creationDate)
+            .publishedAt(publicationDate)
+            .lastModifiedAt(publicationDate)
             .build();
         Mockito.when(articleRepository.findById(1))
             .thenReturn(Optional.of(articleToRemove));
