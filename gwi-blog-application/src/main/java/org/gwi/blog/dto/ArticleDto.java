@@ -16,8 +16,8 @@ public class ArticleDto {
     private int id;
     private String title;
     private String content;
-    private String creationDate;
-    private String lastModificationDate;
+    private String publishedAt;
+    private String lastModifiedAt;
     private CategoryDto category;
     @Builder.Default
     private List<TagDto> tags = new ArrayList<>();
