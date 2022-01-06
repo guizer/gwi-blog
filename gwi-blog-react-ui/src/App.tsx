@@ -5,6 +5,7 @@ import './App.css';
 import Header from './Header';
 import Footer from './Footer';
 import { CategoriesNav, CategoryClientContextProvider } from './categories';
+import { ArticleClientContextProvider } from './articles';
 
 const App: FC = () => (
   <>
@@ -14,7 +15,9 @@ const App: FC = () => (
         <CategoryClientContextProvider>
           <CategoriesNav />
         </CategoryClientContextProvider>
-        <Outlet />
+        <ArticleClientContextProvider>
+          <Outlet />
+        </ArticleClientContextProvider>
       </Container>
     </div>
 

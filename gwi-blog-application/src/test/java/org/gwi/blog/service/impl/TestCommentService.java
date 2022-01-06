@@ -78,7 +78,6 @@ public class TestCommentService {
         Mockito.when(commentRepository.save(Mockito.any())).thenReturn(expectedUpdatedComment);
         CommentDto updatedCommentDto = commentService.updateComment(1, "new content");
 
-
         Mockito.verify(commentRepository, Mockito.times(1)).save(commentArgumentCaptor.capture());
         Assertions.assertThat(commentArgumentCaptor.getValue().getContent())
             .isEqualTo("new content");

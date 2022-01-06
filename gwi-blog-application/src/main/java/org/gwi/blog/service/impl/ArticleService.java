@@ -68,6 +68,7 @@ public class ArticleService implements IArticleService {
         Article articleToCreate = Article.builder()
             .title(creationRequest.getTitle())
             .content(creationRequest.getContent())
+            .imageUrl(creationRequest.getImageUrl())
             .category(category)
             .build();
         return articleRepository.saveAndFlush(articleToCreate).convertToDto();
