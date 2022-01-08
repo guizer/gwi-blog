@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import './index.css';
 import App from './App';
-import Home from './Home';
+import { Articles, ArticlesByCategory } from './views';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
@@ -13,8 +13,11 @@ ReactDOM.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<Home />} />
-          <Route path="categories/:categoryName" element={<Home />} />
+          <Route index element={<Articles />} />
+          <Route
+            path="category/:categoryName"
+            element={<ArticlesByCategory />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

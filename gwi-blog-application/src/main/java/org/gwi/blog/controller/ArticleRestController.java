@@ -48,6 +48,15 @@ public class ArticleRestController {
         return articleService.getArticles(page, pageSize);
     }
 
+    @GetMapping("/category/{categoryId}")
+    public PagedArticles getArticlesByCategoryId(@PathVariable("categoryId") int categoryId,
+                                                 @RequestParam(defaultValue = "1") int page,
+                                                 @RequestParam(defaultValue = "20") int pageSize) {
+        log.info("[GWI-BLOG] Retrieve articles for category {},  page {} and page size {}",
+            categoryId, page, pageSize);
+        return articleService.getArticlesByCategoryId(categoryId, page, pageSize);
+    }
+
     @PostMapping
     public ArticleDto createArticle(ArticleCreationRequest creationRequest) {
         log.info("[GWI-BLOG] Create article for request {}", creationRequest);

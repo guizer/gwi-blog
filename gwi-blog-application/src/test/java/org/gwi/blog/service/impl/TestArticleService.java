@@ -62,6 +62,30 @@ public class TestArticleService {
         Assertions.assertThat(actualArticles).isEqualTo(expectedArticles);
     }
 
+    @Test
+    public void testGetArticlesByCategoryId() {
+        LocalDateTime publicationDate = LocalDateTime.now();
+        int categoryId = 10;
+        List<Article> articles = List.of(Article.builder()
+            .id(1)
+            .category(new Category(categoryId, "test"))
+            .title("title")
+            .content("content")
+            .publishedAt(publicationDate)
+            .lastModifiedAt(publicationDate)
+            .build());
+        Page<Article> articlesPage = new PageImpl<>(articles, Pageable.ofSize(1), 3);
+        Mockito.when(articleRepository.findByCategoryId(categoryId, PageRequest.of(0, 1)))
+            .thenReturn(articlesPage);
+
+        PagedArticles actualArticles = articleService.getArticlesByCategoryId(categoryId, 1, 1);
+
+        PagedArticles expectedArticles =
+            new PagedArticles(articles.stream().map(Article::convertToDto).collect(
+                Collectors.toList()), 3, 3);
+        Assertions.assertThat(actualArticles).isEqualTo(expectedArticles);
+    }
+
     @Test(expected = ArticleNotFound.class)
     public void testGetArticleNotFoundExceptionWhenArticleNotExist() {
         Mockito.when(articleRepository.findById(1)).thenReturn(Optional.empty());

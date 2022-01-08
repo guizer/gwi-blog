@@ -51,6 +51,15 @@ public class ArticleService implements IArticleService {
             articlePage.getTotalElements());
     }
 
+    @Override
+    public PagedArticles getArticlesByCategoryId(int categoryId, int page, int pageSize) {
+        Page<ArticleDto> articlePage =
+            articleRepository.findByCategoryId(categoryId, PageRequest.of(page - 1, pageSize))
+                .map(Article::convertToDto);
+        return new PagedArticles(articlePage.getContent(), articlePage.getTotalPages(),
+            articlePage.getTotalElements());
+    }
+
     @Transactional
     @Override
     public ArticleDto deleteArticle(int articleId) {

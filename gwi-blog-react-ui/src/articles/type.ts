@@ -23,7 +23,11 @@ export interface PagedArticles {
   totalElements: number;
 }
 
-export type GetArticleArgs = {
-  page?: string;
-  pageSize?: string;
+export type GetArticlesArgs = {
+  page?: number;
+  pageSize?: number;
+};
+
+export type GetArticlesByCategoryArgs = GetArticlesArgs & {
+  categoryId: number;
 };
