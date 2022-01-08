@@ -5,8 +5,9 @@ import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.gwi.blog.dto.TagDto;
 import org.gwi.blog.entity.Tag;
-import org.gwi.blog.exception.TagAlreadyExist;
+import org.gwi.blog.exception.TagNameAlreadyExist;
 import org.gwi.blog.exception.TagNotFound;
+import org.gwi.blog.exception.TagSlugAlreadyExist;
 import org.gwi.blog.repository.TagRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +21,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class TestTagService {
 
-    private static final String TAG_FRESH = "fresh";
-
+    private static final String FRESH_TAG_NAME = "Fresh";
+    private static final String FRESH_TAG_SLUG = "fresh-slug";
     @Mock
     private TagRepository tagRepository;
 
@@ -33,61 +34,84 @@ public class TestTagService {
 
     @Test
     public void testGetAllTags() {
-        Mockito.when(tagRepository.findAll()).thenReturn(List.of(new Tag(1, TAG_FRESH)));
+        Mockito.when(tagRepository.findAll())
+            .thenReturn(List.of(new Tag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG)));
 
         List<TagDto> actualTags = tagService.getAllTags();
 
-        Assertions.assertThat(actualTags).isEqualTo(List.of(new TagDto(1, TAG_FRESH)));
+        Assertions.assertThat(actualTags)
+            .isEqualTo(List.of(new TagDto(1, FRESH_TAG_NAME, FRESH_TAG_SLUG)));
     }
 
-    @Test(expected = TagAlreadyExist.class)
+    @Test(expected = TagNameAlreadyExist.class)
     public void testCreateTagThrowTagAlreadyExistExceptionWhenTagWithSameNameExist() {
-        Mockito.when(tagRepository.findByName(TAG_FRESH)).thenReturn(
-            Optional.of(new Tag(1, TAG_FRESH)));
+        Mockito.when(tagRepository.findByName(FRESH_TAG_NAME)).thenReturn(
+            Optional.of(new Tag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG)));
 
-        tagService.createTag(TAG_FRESH);
+        tagService.createTag(FRESH_TAG_NAME, FRESH_TAG_SLUG);
+    }
+
+    @Test(expected = TagSlugAlreadyExist.class)
+    public void testCreateTagThrowTagAlreadyExistExceptionWhenTagWithSameSlugExist() {
+        Mockito.when(tagRepository.findByName(FRESH_TAG_NAME)).thenReturn(Optional.empty());
+        Mockito.when(tagRepository.findBySlug(FRESH_TAG_SLUG)).thenReturn(
+            Optional.of(new Tag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG)));
+
+        tagService.createTag(FRESH_TAG_NAME, FRESH_TAG_SLUG);
     }
 
     @Test
     public void testCreateTag() {
-        Mockito.when(tagRepository.findByName(TAG_FRESH)).thenReturn(Optional.empty());
-        Mockito.when(tagRepository.save(Mockito.any())).thenReturn(new Tag(1, TAG_FRESH));
-        TagDto actualTag = tagService.createTag(TAG_FRESH);
+        Mockito.when(tagRepository.findByName(FRESH_TAG_NAME)).thenReturn(Optional.empty());
+        Mockito.when(tagRepository.save(Mockito.any()))
+            .thenReturn(new Tag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG));
+        TagDto actualTag = tagService.createTag(FRESH_TAG_NAME, FRESH_TAG_SLUG);
 
         Mockito.verify(tagRepository, Mockito.times(1)).save(tagArgumentCaptor.capture());
 
-        Assertions.assertThat(tagArgumentCaptor.getValue().getName()).isEqualTo(TAG_FRESH);
-        Assertions.assertThat(actualTag).isEqualTo(new TagDto(1, TAG_FRESH));
+        Assertions.assertThat(tagArgumentCaptor.getValue().getName()).isEqualTo(FRESH_TAG_NAME);
+        Assertions.assertThat(actualTag).isEqualTo(new TagDto(1, FRESH_TAG_NAME, FRESH_TAG_SLUG));
     }
 
     @Test(expected = TagNotFound.class)
-    public void testRenameTagThrowTagNotFoundExceptionWhenTagNotExist() {
+    public void testUpdateTagThrowTagNotFoundExceptionWhenTagNotExist() {
         Mockito.when(tagRepository.findById(1)).thenReturn(Optional.empty());
-        Mockito.when(tagRepository.findByName(TAG_FRESH)).thenReturn(Optional.empty());
+        Mockito.when(tagRepository.findByName(FRESH_TAG_NAME)).thenReturn(Optional.empty());
+        Mockito.when(tagRepository.findBySlug(FRESH_TAG_SLUG)).thenReturn(Optional.empty());
 
-        tagService.renameTag(1, TAG_FRESH);
+        tagService.updateTag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG);
     }
 
-    @Test(expected = TagAlreadyExist.class)
-    public void testRenameTagThrowTagAlreadyExistExceptionWhenTagWithSameNameExist() {
-        Mockito.when(tagRepository.findByName(TAG_FRESH))
-            .thenReturn(Optional.of(new Tag(2, TAG_FRESH)));
+    @Test(expected = TagNameAlreadyExist.class)
+    public void testUpdateTagThrowTagAlreadyExistExceptionWhenTagWithSameNameExist() {
+        Mockito.when(tagRepository.findByName(FRESH_TAG_NAME))
+            .thenReturn(Optional.of(new Tag(2, FRESH_TAG_NAME, "oldSlug")));
 
-        tagService.renameTag(1, TAG_FRESH);
+        tagService.updateTag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG);
+    }
+
+    @Test(expected = TagSlugAlreadyExist.class)
+    public void testUpdateTagThrowTagAlreadyExistExceptionWhenTagWithSameSlugExist() {
+        Mockito.when(tagRepository.findBySlug(FRESH_TAG_SLUG))
+            .thenReturn(Optional.of(new Tag(2, "oldName", FRESH_TAG_SLUG)));
+
+        tagService.updateTag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG);
     }
 
     @Test
-    public void testRenameTag() {
-        Mockito.when(tagRepository.findById(1)).thenReturn(Optional.of(new Tag(1, "toRename")));
-        Mockito.when(tagRepository.findByName(TAG_FRESH)).thenReturn(Optional.empty());
-        Mockito.when(tagRepository.save(Mockito.any())).thenReturn(new Tag(1, TAG_FRESH));
+    public void testUpdateTag() {
+        Mockito.when(tagRepository.findById(1))
+            .thenReturn(Optional.of(new Tag(1, "oldName", "oldSlug")));
+        Mockito.when(tagRepository.findByName(FRESH_TAG_NAME)).thenReturn(Optional.empty());
+        Mockito.when(tagRepository.save(Mockito.any()))
+            .thenReturn(new Tag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG));
 
-        TagDto actualTag = tagService.renameTag(1, TAG_FRESH);
+        TagDto actualTag = tagService.updateTag(1, FRESH_TAG_NAME, FRESH_TAG_SLUG);
 
-        Assertions.assertThat(actualTag).isEqualTo(new TagDto(1, TAG_FRESH));
+        Assertions.assertThat(actualTag).isEqualTo(new TagDto(1, FRESH_TAG_NAME, FRESH_TAG_SLUG));
         Mockito.verify(tagRepository, Mockito.times(1)).save(tagArgumentCaptor.capture());
         Assertions.assertThat(tagArgumentCaptor.getValue().getId()).isEqualTo(1);
-        Assertions.assertThat(tagArgumentCaptor.getValue().getName()).isEqualTo(TAG_FRESH);
+        Assertions.assertThat(tagArgumentCaptor.getValue().getName()).isEqualTo(FRESH_TAG_NAME);
     }
 
     @Test(expected = TagNotFound.class)
@@ -99,13 +123,13 @@ public class TestTagService {
 
     @Test
     public void testRemoveTagWhenTagExist() {
-        Tag tagToRemove = new Tag(1, "testTag");
+        Tag tagToRemove = new Tag(1, "oldName", "oldSlug");
         Mockito.when(tagRepository.findById(1)).thenReturn(Optional.of(tagToRemove));
 
         TagDto actualTag = tagService.deleteTag(1);
 
         Mockito.verify(tagRepository, Mockito.times(1)).delete(tagToRemove);
-        Assertions.assertThat(actualTag).isEqualTo(new TagDto(1, "testTag"));
+        Assertions.assertThat(actualTag).isEqualTo(new TagDto(1, "oldName", "oldSlug"));
     }
 
 }

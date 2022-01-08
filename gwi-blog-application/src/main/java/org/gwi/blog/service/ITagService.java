@@ -23,16 +23,17 @@ public interface ITagService {
     /**
      * Create an tag.
      */
-    TagDto createTag(String name);
+    TagDto createTag(String name, String slug);
 
     /**
      * Rename the tag with the given id.
      *
      * @param tagId   the tag id
      * @param newName the new tag name
-     * @return the renamed tag
+     * @param newSlug the new tag slug
+     * @return the updated tag
      * @throws TagNotFound if the tag does not exist
      */
-    TagDto renameTag(int tagId, String newName);
+    TagDto updateTag(int tagId, String newName, String newSlug);
 
 }

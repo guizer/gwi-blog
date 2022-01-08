@@ -4,8 +4,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.gwi.blog.dto.TagDto;
 import org.gwi.blog.entity.Tag;
-import org.gwi.blog.exception.TagAlreadyExist;
+import org.gwi.blog.exception.TagNameAlreadyExist;
 import org.gwi.blog.exception.TagNotFound;
+import org.gwi.blog.exception.TagSlugAlreadyExist;
 import org.gwi.blog.repository.TagRepository;
 import org.gwi.blog.service.ITagService;
 import org.springframework.stereotype.Service;
@@ -28,21 +29,18 @@ public class TagService implements ITagService {
 
     @Transactional
     @Override
-    public TagDto createTag(String name) {
-        tagRepository.findByName(name).ifPresent(tagFound -> {
-            throw new TagAlreadyExist(name);
-        });
+    public TagDto createTag(String name, String slug) {
+        checkTagExist(name, slug);
         Tag tagToCreate = new Tag();
         tagToCreate.setName(name);
+        tagToCreate.setSlug(slug);
         return tagRepository.save(tagToCreate).convertToDto();
     }
 
     @Transactional
     @Override
-    public TagDto renameTag(int tagId, String newName) {
-        tagRepository.findByName(newName).ifPresent(tagFound -> {
-            throw new TagAlreadyExist(newName);
-        });
+    public TagDto updateTag(int tagId, String newName, String newSlug) {
+        checkTagExist(newName, newSlug);
         Tag tagToRename = tagRepository.findById(tagId).orElseThrow(() -> new TagNotFound(tagId));
         tagToRename.setName(newName);
         return tagRepository.save(tagToRename).convertToDto();
@@ -54,6 +52,15 @@ public class TagService implements ITagService {
         Tag tagToDelete = tagRepository.findById(tagId).orElseThrow(() -> new TagNotFound(tagId));
         tagRepository.delete(tagToDelete);
         return tagToDelete.convertToDto();
+    }
+
+    private void checkTagExist(String name, String slug) {
+        tagRepository.findByName(name).ifPresent(tagFound -> {
+            throw new TagNameAlreadyExist(name);
+        });
+        tagRepository.findBySlug(slug).ifPresent(tagFound -> {
+            throw new TagSlugAlreadyExist(slug);
+        });
     }
 
 }

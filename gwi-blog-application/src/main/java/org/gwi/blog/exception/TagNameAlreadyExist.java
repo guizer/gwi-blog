@@ -2,14 +2,14 @@ package org.gwi.blog.exception;
 
 import java.io.Serial;
 
-public class TagAlreadyExist extends IllegalArgumentException {
+public class TagNameAlreadyExist extends IllegalArgumentException {
 
     @Serial
     private static final long serialVersionUID = -1962296582279132188L;
 
     private final String tagName;
 
-    public TagAlreadyExist(String tagName) {
+    public TagNameAlreadyExist(String tagName) {
         super();
         this.tagName = tagName;
     }

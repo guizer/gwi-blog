@@ -5,8 +5,9 @@ import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.gwi.blog.dto.CategoryDto;
 import org.gwi.blog.entity.Category;
-import org.gwi.blog.exception.CategoryAlreadyExist;
+import org.gwi.blog.exception.CategoryNameAlreadyExist;
 import org.gwi.blog.exception.CategoryNotFound;
+import org.gwi.blog.exception.CategorySlugAlreadyExist;
 import org.gwi.blog.repository.CategoryRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class TestCategoryService {
 
-    private static final String CATEGORY_FRESH = "fresh";
+    private static final String TV_SHOWS_NAME = "TV Shows";
+    private static final String TV_SHOWS_SLUG = "tv-shows";
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -34,67 +36,80 @@ public class TestCategoryService {
     @Test
     public void testGetAllCategories() {
         Mockito.when(categoryRepository.findAll())
-            .thenReturn(List.of(new Category(1, CATEGORY_FRESH)));
+            .thenReturn(List.of(new Category(1, TV_SHOWS_NAME, TV_SHOWS_NAME)));
 
         List<CategoryDto> actualCategorys = categoryService.getAllCategories();
 
         Assertions.assertThat(actualCategorys)
-            .isEqualTo(List.of(new CategoryDto(1, CATEGORY_FRESH)));
+            .isEqualTo(List.of(new CategoryDto(1, TV_SHOWS_NAME, TV_SHOWS_NAME)));
     }
 
-    @Test(expected = CategoryAlreadyExist.class)
+    @Test(expected = CategoryNameAlreadyExist.class)
     public void testCreateCategoryThrowCategoryAlreadyExistWhenCategoryWithSameNameExist() {
-        Mockito.when(categoryRepository.findByName(CATEGORY_FRESH)).thenReturn(
-            Optional.of(new Category(1, CATEGORY_FRESH)));
+        Mockito.when(categoryRepository.findByName(TV_SHOWS_NAME)).thenReturn(
+            Optional.of(new Category(1, TV_SHOWS_NAME, TV_SHOWS_NAME)));
 
-        categoryService.createCategory(CATEGORY_FRESH);
+        categoryService.createCategory(TV_SHOWS_NAME, TV_SHOWS_NAME);
     }
 
     @Test
     public void testCreateCategory() {
-        Mockito.when(categoryRepository.findByName(CATEGORY_FRESH)).thenReturn(Optional.empty());
+        Mockito.when(categoryRepository.findByName(TV_SHOWS_NAME)).thenReturn(Optional.empty());
         Mockito.when(categoryRepository.save(Mockito.any()))
-            .thenReturn(new Category(1, CATEGORY_FRESH));
-        CategoryDto actualCategory = categoryService.createCategory(CATEGORY_FRESH);
+            .thenReturn(new Category(1, TV_SHOWS_NAME, TV_SHOWS_NAME));
+        CategoryDto actualCategory = categoryService.createCategory(TV_SHOWS_NAME, TV_SHOWS_SLUG);
 
         Mockito.verify(categoryRepository, Mockito.times(1)).save(categoryArgumentCaptor.capture());
 
         Assertions.assertThat(categoryArgumentCaptor.getValue().getName())
-            .isEqualTo(CATEGORY_FRESH);
-        Assertions.assertThat(actualCategory).isEqualTo(new CategoryDto(1, CATEGORY_FRESH));
+            .isEqualTo(TV_SHOWS_NAME);
+        Assertions.assertThat(actualCategory).isEqualTo(new CategoryDto(1, TV_SHOWS_NAME,
+            TV_SHOWS_NAME));
     }
 
     @Test(expected = CategoryNotFound.class)
-    public void testRenameCategoryThrowCategoryNotFoundCategoryExceptionWhenCategoryNotExist() {
+    public void testUpdateCategoryThrowCategoryNotFoundCategoryExceptionWhenCategoryNotExist() {
         Mockito.when(categoryRepository.findById(1)).thenReturn(Optional.empty());
-        Mockito.when(categoryRepository.findByName(CATEGORY_FRESH)).thenReturn(Optional.empty());
+        Mockito.when(categoryRepository.findByName(TV_SHOWS_NAME)).thenReturn(Optional.empty());
 
-        categoryService.renameCategory(1, CATEGORY_FRESH);
+        categoryService.updateCategory(1, TV_SHOWS_NAME, TV_SHOWS_SLUG);
     }
 
-    @Test(expected = CategoryAlreadyExist.class)
-    public void testRenameCategoryThrowCategoryAlreadyExistWhenCategoryWithSameNameExist() {
-        Mockito.when(categoryRepository.findByName(CATEGORY_FRESH))
-            .thenReturn(Optional.of(new Category(2, CATEGORY_FRESH)));
+    @Test(expected = CategoryNameAlreadyExist.class)
+    public void testUpdateCategoryThrowCategoryAlreadyExistWhenCategoryWithSameNameExist() {
+        Mockito.when(categoryRepository.findByName(TV_SHOWS_NAME))
+            .thenReturn(Optional.of(new Category(2, TV_SHOWS_NAME, "oldSlug")));
 
-        categoryService.renameCategory(1, CATEGORY_FRESH);
+        categoryService.updateCategory(1, TV_SHOWS_NAME, TV_SHOWS_SLUG);
+    }
+
+    @Test(expected = CategorySlugAlreadyExist.class)
+    public void testUpdateCategoryThrowCategoryAlreadyExistWhenCategoryWithSameSlugExist() {
+        Mockito.when(categoryRepository.findByName(TV_SHOWS_NAME)).thenReturn(Optional.empty());
+        Mockito.when(categoryRepository.findBySlug(TV_SHOWS_SLUG))
+            .thenReturn(Optional.of(new Category(1, "oldName", TV_SHOWS_SLUG)));
+
+        categoryService.updateCategory(1, TV_SHOWS_NAME, TV_SHOWS_SLUG);
     }
 
     @Test
-    public void testRenameCategory() {
+    public void testUpdateCategory() {
         Mockito.when(categoryRepository.findById(1))
-            .thenReturn(Optional.of(new Category(1, "toRename")));
-        Mockito.when(categoryRepository.findByName(CATEGORY_FRESH)).thenReturn(Optional.empty());
+            .thenReturn(Optional.of(new Category(1, "oldName", "oldSlug")));
+        Mockito.when(categoryRepository.findByName(TV_SHOWS_NAME)).thenReturn(Optional.empty());
+        Mockito.when(categoryRepository.findBySlug(TV_SHOWS_SLUG)).thenReturn(Optional.empty());
         Mockito.when(categoryRepository.save(Mockito.any()))
-            .thenReturn(new Category(1, CATEGORY_FRESH));
+            .thenReturn(new Category(1, TV_SHOWS_NAME, TV_SHOWS_SLUG));
 
-        CategoryDto actualCategory = categoryService.renameCategory(1, CATEGORY_FRESH);
+        CategoryDto actualCategory =
+            categoryService.updateCategory(1, TV_SHOWS_NAME, TV_SHOWS_SLUG);
 
-        Assertions.assertThat(actualCategory).isEqualTo(new CategoryDto(1, CATEGORY_FRESH));
+        Assertions.assertThat(actualCategory)
+            .isEqualTo(new CategoryDto(1, TV_SHOWS_NAME, TV_SHOWS_SLUG));
         Mockito.verify(categoryRepository, Mockito.times(1)).save(categoryArgumentCaptor.capture());
         Assertions.assertThat(categoryArgumentCaptor.getValue().getId()).isEqualTo(1);
         Assertions.assertThat(categoryArgumentCaptor.getValue().getName())
-            .isEqualTo(CATEGORY_FRESH);
+            .isEqualTo(TV_SHOWS_NAME);
     }
 
     @Test(expected = CategoryNotFound.class)
@@ -106,13 +121,14 @@ public class TestCategoryService {
 
     @Test
     public void testRemoveCategoryWhenCategoryExist() {
-        Category categoryToRemove = new Category(1, "testCategory");
+        Category categoryToRemove = new Category(1, TV_SHOWS_NAME, TV_SHOWS_SLUG);
         Mockito.when(categoryRepository.findById(1)).thenReturn(Optional.of(categoryToRemove));
 
         CategoryDto actualCategory = categoryService.deleteCategory(1);
 
         Mockito.verify(categoryRepository, Mockito.times(1)).delete(categoryToRemove);
-        Assertions.assertThat(actualCategory).isEqualTo(new CategoryDto(1, "testCategory"));
+        Assertions.assertThat(actualCategory)
+            .isEqualTo(new CategoryDto(1, TV_SHOWS_NAME, TV_SHOWS_SLUG));
     }
 
 }

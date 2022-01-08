@@ -4,8 +4,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.gwi.blog.controller.request.CategoryCreationRequest;
 import org.gwi.blog.dto.CategoryDto;
-import org.gwi.blog.exception.CategoryAlreadyExist;
+import org.gwi.blog.exception.CategoryNameAlreadyExist;
 import org.gwi.blog.exception.CategoryNotFound;
+import org.gwi.blog.exception.CategorySlugAlreadyExist;
 import org.gwi.blog.service.ICategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,14 +43,15 @@ public class CategoryRestController {
     @PostMapping
     public CategoryDto createCategory(@RequestBody CategoryCreationRequest createRequest) {
         log.info("[GWI-BLOG] Create category for name {}", createRequest.getName());
-        return categoryService.createCategory(createRequest.getName());
+        return categoryService.createCategory(createRequest.getName(), createRequest.getSlug());
     }
 
     @PutMapping("/{categoryId}")
-    public CategoryDto renameCategory(@PathVariable int categoryId,
-                                      @RequestBody CategoryCreationRequest renameRequest) {
-        log.info("[GWI-BLOG] Rename category of id {} to {}", categoryId, renameRequest.getName());
-        return categoryService.renameCategory(categoryId, renameRequest.getName());
+    public CategoryDto updateCategory(@PathVariable int categoryId,
+                                      @RequestBody CategoryCreationRequest updateRequest) {
+        log.info("[GWI-BLOG] Rename category of id {} to {}", categoryId, updateRequest);
+        return categoryService.updateCategory(categoryId, updateRequest.getName(),
+            updateRequest.getSlug());
     }
 
     @DeleteMapping("/{categoryId}")
@@ -65,8 +67,14 @@ public class CategoryRestController {
     }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(CategoryAlreadyExist.class)
-    public String handleException(CategoryAlreadyExist exception) {
+    @ExceptionHandler(CategoryNameAlreadyExist.class)
+    public String handleException(CategoryNameAlreadyExist exception) {
+        return exception.getMessage();
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CategorySlugAlreadyExist.class)
+    public String handleException(CategorySlugAlreadyExist exception) {
         return exception.getMessage();
     }
 

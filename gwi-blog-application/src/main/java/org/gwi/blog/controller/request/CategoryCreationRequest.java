@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class CategoryCreationRequest {
 
     private String name;
+    private String slug;
 
 }

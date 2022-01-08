@@ -69,7 +69,7 @@ public class TestCommentRestController {
         Mockito.when(commentService.deleteComment(1)).thenReturn(expectedComment);
         mockMvc.perform(MockMvcRequestBuilders.delete(CommentRestController.NAMESPACE + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(new CategoryCreationRequest(COMMENT_CONTENT))))
+                .content(gson.toJson(new CommentCreationRequest(COMMENT_CONTENT))))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(gson.toJson(expectedComment)));
     }
