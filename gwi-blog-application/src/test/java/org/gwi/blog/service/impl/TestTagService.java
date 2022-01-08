@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class TestTagService {
 
     private static final String FRESH_TAG_NAME = "Fresh";
-    private static final String FRESH_TAG_SLUG = "fresh";
+    private static final String FRESH_TAG_SLUG = "fresh-slug";
     @Mock
     private TagRepository tagRepository;
 

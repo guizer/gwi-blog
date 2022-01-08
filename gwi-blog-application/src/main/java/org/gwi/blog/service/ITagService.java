@@ -31,7 +31,7 @@ public interface ITagService {
      * @param tagId   the tag id
      * @param newName the new tag name
      * @param newSlug the new tag slug
-     * @return the renamed tag
+     * @return the updated tag
      * @throws TagNotFound if the tag does not exist
      */
     TagDto updateTag(int tagId, String newName, String newSlug);

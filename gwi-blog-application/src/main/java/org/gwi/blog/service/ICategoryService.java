@@ -30,8 +30,8 @@ public interface ICategoryService {
      *
      * @param categoryId the category id
      * @param newName    the new category name
-     * @param newName    the new slug name
-     * @return the renamed category
+     * @param newSlug    the new slug name
+     * @return the updated category
      * @throws CategoryNotFound if the category does not exist
      */
     CategoryDto updateCategory(int categoryId, String newName, String newSlug);
