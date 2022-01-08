@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.gwi.blog.dto.CommentDto;
 import org.gwi.blog.entity.Comment;
 import org.gwi.blog.exception.CommentNotFound;
-import org.gwi.blog.exception.TagNotFound;
 import org.gwi.blog.repository.CommentRepository;
 import org.gwi.blog.service.ICommentService;
 import org.springframework.stereotype.Service;

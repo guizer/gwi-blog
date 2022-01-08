@@ -25,8 +25,13 @@ article {
   color: gray;
 }
 
+.pagination {
+  justify-content: center;
+}
+
 .footer {
   background-color: rgb(230, 230, 230);
   text-align: center;
   padding: 20px 0;
+  margin-top: 50px;
 }

@@ -22,3 +22,8 @@ export interface PagedArticles {
   totalPages: number;
   totalElements: number;
 }
+
+export type GetArticleArgs = {
+  page?: string;
+  pageSize?: string;
+};

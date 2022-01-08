@@ -12,6 +12,6 @@ public class PagedComments {
 
     private List<CommentDto> comments;
     private int totalPages;
-    private int totalElements;
+    private long totalElements;
 
 }
