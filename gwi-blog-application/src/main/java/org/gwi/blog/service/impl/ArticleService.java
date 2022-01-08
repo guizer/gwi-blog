@@ -45,10 +45,10 @@ public class ArticleService implements IArticleService {
 
     @Override
     public PagedArticles getArticles(int page, int pageSize) {
-        Page<ArticleDto> articlePage = articleRepository.findAll(PageRequest.of(page, pageSize))
+        Page<ArticleDto> articlePage = articleRepository.findAll(PageRequest.of(page - 1, pageSize))
             .map(Article::convertToDto);
         return new PagedArticles(articlePage.getContent(), articlePage.getTotalPages(),
-            articlePage.getNumberOfElements());
+            articlePage.getTotalElements());
     }
 
     @Transactional
@@ -90,10 +90,10 @@ public class ArticleService implements IArticleService {
     @Override
     public PagedComments getComments(int articleId, int page, int pageSize) {
         Page<CommentDto> commentPage =
-            commentRepository.findByArticleId(articleId, PageRequest.of(page, pageSize))
+            commentRepository.findByArticleId(articleId, PageRequest.of(page - 1, pageSize))
                 .map(Comment::convertToDto);
         return new PagedComments(commentPage.getContent(), commentPage.getTotalPages(),
-            commentPage.getNumberOfElements());
+            commentPage.getTotalElements());
     }
 
     @Transactional

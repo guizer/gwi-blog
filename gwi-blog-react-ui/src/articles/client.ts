@@ -1,10 +1,5 @@
 import axios from 'axios';
-import { PagedArticles } from './type';
-
-type GetArticleArgs = {
-  page?: number;
-  pageSize?: number;
-};
+import { GetArticleArgs, PagedArticles } from './type';
 
 export interface ArticleClient {
   getArticles: (args?: GetArticleArgs) => Promise<PagedArticles>;

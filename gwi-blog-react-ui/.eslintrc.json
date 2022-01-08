@@ -21,6 +21,8 @@
     "operator-linebreak": "off",
     "react/function-component-definition": "off",
     "react/jsx-one-expression-per-line": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/jsx-props-no-spreading": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off"
   }
 }

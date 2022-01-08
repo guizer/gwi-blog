@@ -1,9 +1,12 @@
 package org.gwi.blog.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.gwi.blog.dto.ArticleDto;
+import org.gwi.blog.dto.PagedArticles;
 import org.gwi.blog.entity.Article;
 import org.gwi.blog.entity.Category;
 import org.gwi.blog.exception.ArticleNotFound;
@@ -16,6 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestArticleService {
@@ -31,6 +38,29 @@ public class TestArticleService {
 
     @InjectMocks
     private ArticleService articleService;
+
+    @Test
+    public void testGetArticles() {
+        LocalDateTime publicationDate = LocalDateTime.now();
+        List<Article> articles = List.of(Article.builder()
+            .id(1)
+            .category(new Category(1, "test"))
+            .title("title")
+            .content("content")
+            .publishedAt(publicationDate)
+            .lastModifiedAt(publicationDate)
+            .build());
+        Page<Article> articlesPage = new PageImpl<>(articles, Pageable.ofSize(1), 3);
+        Mockito.when(articleRepository.findAll(PageRequest.of(0, 1)))
+            .thenReturn(articlesPage);
+
+        PagedArticles actualArticles = articleService.getArticles(1, 1);
+
+        PagedArticles expectedArticles =
+            new PagedArticles(articles.stream().map(Article::convertToDto).collect(
+                Collectors.toList()), 3, 3);
+        Assertions.assertThat(actualArticles).isEqualTo(expectedArticles);
+    }
 
     @Test(expected = ArticleNotFound.class)
     public void testGetArticleNotFoundExceptionWhenArticleNotExist() {

@@ -12,6 +12,6 @@ public class PagedArticles {
 
     private List<ArticleDto> articles;
     private int totalPages;
-    private int totalElements;
+    private long totalElements;
 
 }
