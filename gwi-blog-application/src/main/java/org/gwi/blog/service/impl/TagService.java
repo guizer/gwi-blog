@@ -45,7 +45,7 @@ public class TagService implements ITagService {
             throw new TagNameAlreadyExist(newName);
         });
         tagRepository.findBySlug(newSlug).ifPresent(tagFound -> {
-            throw new TagSlugAlreadyExist(newName);
+            throw new TagSlugAlreadyExist(newSlug);
         });
         Tag tagToRename = tagRepository.findById(tagId).orElseThrow(() -> new TagNotFound(tagId));
         tagToRename.setName(newName);

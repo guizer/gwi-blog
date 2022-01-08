@@ -43,7 +43,7 @@ public class CategoryService implements ICategoryService {
             throw new CategoryNameAlreadyExist(name);
         });
         categoryRepository.findBySlug(slug).ifPresent(categoryFound -> {
-            throw new CategorySlugAlreadyExist(name);
+            throw new CategorySlugAlreadyExist(slug);
         });
         Category category = new Category();
         category.setName(name);
