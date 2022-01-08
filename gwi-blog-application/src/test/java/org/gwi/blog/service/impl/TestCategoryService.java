@@ -71,7 +71,6 @@ public class TestCategoryService {
     public void testUpdateCategoryThrowCategoryNotFoundCategoryExceptionWhenCategoryNotExist() {
         Mockito.when(categoryRepository.findById(1)).thenReturn(Optional.empty());
         Mockito.when(categoryRepository.findByName(TV_SHOWS_NAME)).thenReturn(Optional.empty());
-        Mockito.when(categoryRepository.findByName(TV_SHOWS_SLUG)).thenReturn(Optional.empty());
 
         categoryService.updateCategory(1, TV_SHOWS_NAME, TV_SHOWS_SLUG);
     }
@@ -80,7 +79,6 @@ public class TestCategoryService {
     public void testUpdateCategoryThrowCategoryAlreadyExistWhenCategoryWithSameNameExist() {
         Mockito.when(categoryRepository.findByName(TV_SHOWS_NAME))
             .thenReturn(Optional.of(new Category(2, TV_SHOWS_NAME, "oldSlug")));
-        Mockito.when(categoryRepository.findBySlug(TV_SHOWS_SLUG)).thenReturn(Optional.empty());
 
         categoryService.updateCategory(1, TV_SHOWS_NAME, TV_SHOWS_SLUG);
     }

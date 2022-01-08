@@ -23,7 +23,7 @@ public interface ITagService {
     /**
      * Create an tag.
      */
-    TagDto createTag(String name);
+    TagDto createTag(String name, String slug);
 
     /**
      * Rename the tag with the given id.

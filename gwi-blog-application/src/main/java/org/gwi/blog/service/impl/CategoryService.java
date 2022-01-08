@@ -39,12 +39,7 @@ public class CategoryService implements ICategoryService {
     @Transactional
     @Override
     public CategoryDto createCategory(String name, String slug) {
-        categoryRepository.findByName(name).ifPresent(categoryFound -> {
-            throw new CategoryNameAlreadyExist(name);
-        });
-        categoryRepository.findBySlug(slug).ifPresent(categoryFound -> {
-            throw new CategorySlugAlreadyExist(slug);
-        });
+        checkCategoryExist(name, slug);
         Category category = new Category();
         category.setName(name);
         category.setSlug(slug);
@@ -54,16 +49,20 @@ public class CategoryService implements ICategoryService {
     @Transactional
     @Override
     public CategoryDto updateCategory(int categoryId, String newName, String newSlug) {
-        categoryRepository.findByName(newName).ifPresent(tagFound -> {
-            throw new CategoryNameAlreadyExist(newName);
-        });
-        categoryRepository.findBySlug(newSlug).ifPresent(tagFound -> {
-            throw new CategorySlugAlreadyExist(newSlug);
-        });
+        checkCategoryExist(newName, newSlug);
         Category categoryToRename = categoryRepository.findById(categoryId)
             .orElseThrow(() -> new CategoryNotFound(categoryId));
         categoryToRename.setName(newName);
         return categoryRepository.save(categoryToRename).convertToDto();
+    }
+
+    private void checkCategoryExist(String name, String slug) {
+        categoryRepository.findByName(name).ifPresent(categoryFound -> {
+            throw new CategoryNameAlreadyExist(name);
+        });
+        categoryRepository.findBySlug(slug).ifPresent(categoryFound -> {
+            throw new CategorySlugAlreadyExist(slug);
+        });
     }
 
 }

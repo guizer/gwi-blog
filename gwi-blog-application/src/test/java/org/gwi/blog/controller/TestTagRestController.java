@@ -53,7 +53,7 @@ public class TestTagRestController {
     @Test
     public void testCreateTagRespondWith201WhenTagNotExist() throws Exception {
         TagDto expectedTag = new TagDto(1, FRESH_TAG_NAME, FRESH_TAG_SLUG);
-        Mockito.when(tagService.createTag(FRESH_TAG_NAME)).thenReturn(expectedTag);
+        Mockito.when(tagService.createTag(FRESH_TAG_NAME, FRESH_TAG_SLUG)).thenReturn(expectedTag);
         mockMvc.perform(MockMvcRequestBuilders.post(TagRestController.NAMESPACE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(new CategoryCreationRequest(FRESH_TAG_NAME, FRESH_TAG_SLUG))))
@@ -62,9 +62,19 @@ public class TestTagRestController {
     }
 
     @Test
-    public void testCreateTagRespondWith400WhenTagExist() throws Exception {
-        Mockito.when(tagService.createTag(FRESH_TAG_NAME))
+    public void testCreateTagRespondWith400WhenTagNameExist() throws Exception {
+        Mockito.when(tagService.createTag(FRESH_TAG_NAME, FRESH_TAG_SLUG))
             .thenThrow(TagNameAlreadyExist.class);
+        mockMvc.perform(MockMvcRequestBuilders.post(TagRestController.NAMESPACE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(new CategoryCreationRequest(FRESH_TAG_NAME, FRESH_TAG_SLUG))))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateTagRespondWith400WhenTagSlugExist() throws Exception {
+        Mockito.when(tagService.createTag(FRESH_TAG_NAME, FRESH_TAG_SLUG))
+            .thenThrow(TagSlugAlreadyExist.class);
         mockMvc.perform(MockMvcRequestBuilders.post(TagRestController.NAMESPACE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(new CategoryCreationRequest(FRESH_TAG_NAME, FRESH_TAG_SLUG))))

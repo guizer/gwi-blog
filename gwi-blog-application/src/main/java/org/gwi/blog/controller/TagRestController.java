@@ -43,7 +43,7 @@ public class TagRestController {
     @PostMapping
     public TagDto createTag(@RequestBody CategoryCreationRequest createRequest) {
         log.info("[GWI-BLOG] Create tag for name {}", createRequest.getName());
-        return tagService.createTag(createRequest.getName());
+        return tagService.createTag(createRequest.getName(), createRequest.getSlug());
     }
 
     @PutMapping("/{tagId}")

@@ -29,24 +29,18 @@ public class TagService implements ITagService {
 
     @Transactional
     @Override
-    public TagDto createTag(String name) {
-        tagRepository.findByName(name).ifPresent(tagFound -> {
-            throw new TagNameAlreadyExist(name);
-        });
+    public TagDto createTag(String name, String slug) {
+        checkTagExist(name, slug);
         Tag tagToCreate = new Tag();
         tagToCreate.setName(name);
+        tagToCreate.setSlug(slug);
         return tagRepository.save(tagToCreate).convertToDto();
     }
 
     @Transactional
     @Override
     public TagDto updateTag(int tagId, String newName, String newSlug) {
-        tagRepository.findByName(newName).ifPresent(tagFound -> {
-            throw new TagNameAlreadyExist(newName);
-        });
-        tagRepository.findBySlug(newSlug).ifPresent(tagFound -> {
-            throw new TagSlugAlreadyExist(newSlug);
-        });
+        checkTagExist(newName, newSlug);
         Tag tagToRename = tagRepository.findById(tagId).orElseThrow(() -> new TagNotFound(tagId));
         tagToRename.setName(newName);
         return tagRepository.save(tagToRename).convertToDto();
@@ -58,6 +52,15 @@ public class TagService implements ITagService {
         Tag tagToDelete = tagRepository.findById(tagId).orElseThrow(() -> new TagNotFound(tagId));
         tagRepository.delete(tagToDelete);
         return tagToDelete.convertToDto();
+    }
+
+    private void checkTagExist(String name, String slug) {
+        tagRepository.findByName(name).ifPresent(tagFound -> {
+            throw new TagNameAlreadyExist(name);
+        });
+        tagRepository.findBySlug(slug).ifPresent(tagFound -> {
+            throw new TagSlugAlreadyExist(slug);
+        });
     }
 
 }
