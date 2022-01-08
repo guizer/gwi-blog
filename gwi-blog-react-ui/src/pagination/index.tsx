@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import BootsrapPagination from 'react-bootstrap/esm/Pagination';
+import BootstrapPagination from 'react-bootstrap/esm/Pagination';
 
-const { First, Item, Last, Next, Prev } = BootsrapPagination;
+const { First, Item, Last, Next, Prev } = BootstrapPagination;
 
 interface PaginationProps {
   currentPage: number;
@@ -14,7 +14,7 @@ const Pagination: FC<PaginationProps> = ({
   onClick,
   totalPages,
 }) => (
-  <BootsrapPagination>
+  <BootstrapPagination>
     <First
       onClick={onClick ? () => onClick(1) : undefined}
       disabled={currentPage === 1}
@@ -44,7 +44,7 @@ const Pagination: FC<PaginationProps> = ({
       onClick={onClick ? () => onClick(totalPages) : undefined}
       disabled={currentPage === totalPages}
     />
-  </BootsrapPagination>
+  </BootstrapPagination>
 );
 
 export default Pagination;
