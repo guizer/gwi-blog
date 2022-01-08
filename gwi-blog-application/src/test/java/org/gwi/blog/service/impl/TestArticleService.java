@@ -44,7 +44,7 @@ public class TestArticleService {
         LocalDateTime publicationDate = LocalDateTime.now();
         List<Article> articles = List.of(Article.builder()
             .id(1)
-            .category(new Category(1, "test"))
+            .category(new Category(1, "categoryName", "categorySlug"))
             .title("title")
             .content("content")
             .publishedAt(publicationDate)
@@ -68,7 +68,7 @@ public class TestArticleService {
         int categoryId = 10;
         List<Article> articles = List.of(Article.builder()
             .id(1)
-            .category(new Category(categoryId, "test"))
+            .category(new Category(categoryId, "categoryName", "categorySlug"))
             .title("title")
             .content("content")
             .publishedAt(publicationDate)
@@ -98,7 +98,7 @@ public class TestArticleService {
         LocalDateTime publicationDate = LocalDateTime.now();
         Article article = Article.builder()
             .id(1)
-            .category(new Category(1, "test"))
+            .category(new Category(1, "categoryName", "categorySlug"))
             .title("title")
             .content("content")
             .publishedAt(publicationDate)
@@ -125,7 +125,7 @@ public class TestArticleService {
             .id(1)
             .title("title")
             .content("content")
-            .category(new Category(1, "test"))
+            .category(new Category(1, "categoryName", "categorySlug"))
             .publishedAt(publicationDate)
             .lastModifiedAt(publicationDate)
             .build();

@@ -4,8 +4,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.gwi.blog.dto.TagDto;
 import org.gwi.blog.entity.Tag;
-import org.gwi.blog.exception.TagAlreadyExist;
+import org.gwi.blog.exception.TagNameAlreadyExist;
 import org.gwi.blog.exception.TagNotFound;
+import org.gwi.blog.exception.TagSlugAlreadyExist;
 import org.gwi.blog.repository.TagRepository;
 import org.gwi.blog.service.ITagService;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class TagService implements ITagService {
     @Override
     public TagDto createTag(String name) {
         tagRepository.findByName(name).ifPresent(tagFound -> {
-            throw new TagAlreadyExist(name);
+            throw new TagNameAlreadyExist(name);
         });
         Tag tagToCreate = new Tag();
         tagToCreate.setName(name);
@@ -39,9 +40,12 @@ public class TagService implements ITagService {
 
     @Transactional
     @Override
-    public TagDto renameTag(int tagId, String newName) {
+    public TagDto updateTag(int tagId, String newName, String newSlug) {
         tagRepository.findByName(newName).ifPresent(tagFound -> {
-            throw new TagAlreadyExist(newName);
+            throw new TagNameAlreadyExist(newName);
+        });
+        tagRepository.findBySlug(newName).ifPresent(tagFound -> {
+            throw new TagSlugAlreadyExist(newName);
         });
         Tag tagToRename = tagRepository.findById(tagId).orElseThrow(() -> new TagNotFound(tagId));
         tagToRename.setName(newName);

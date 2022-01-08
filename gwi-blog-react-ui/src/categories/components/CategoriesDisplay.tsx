@@ -5,7 +5,7 @@ import { Category } from '../type';
 interface CategoriesDisplayProps {
   categories: Category[];
   activeCategory?: string;
-  onCategorySelected?: (category: string) => void;
+  onCategorySelected?: (categorySlug: string) => void;
 }
 
 const CategoriesDisplay: FC<CategoriesDisplayProps> = ({
@@ -28,8 +28,8 @@ const CategoriesDisplay: FC<CategoriesDisplayProps> = ({
         categoryA.name.localeCompare(categoryB.name),
       )
       .map((category) => (
-        <Nav.Item key={category.name}>
-          <Nav.Link eventKey={category.name}>{category.name}</Nav.Link>
+        <Nav.Item key={category.slug}>
+          <Nav.Link eventKey={category.slug}>{category.name}</Nav.Link>
         </Nav.Item>
       ))}
   </Nav>

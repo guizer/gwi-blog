@@ -1,6 +1,7 @@
 export interface Category {
   id: number;
   name: string;
+  slug: string;
 }
 
-export type CategoryByName = { [categoryName: string]: Category };
+export type CategoryBySlug = { [categorySlug: string]: Category };

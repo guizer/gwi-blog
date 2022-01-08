@@ -16,7 +16,7 @@ const CategoriesNav: FC = () => {
           fetchedCategories.reduce(
             (obj, category) => ({
               ...obj,
-              [category.name]: category,
+              [category.slug]: category,
             }),
             {},
           ),
@@ -25,8 +25,8 @@ const CategoriesNav: FC = () => {
       // eslint-disable-next-line no-console
       .catch((error) => console.log(error));
   }, [categoryClient, setCategories]);
-  const onCategorySelected = (categoryName: string) =>
-    navigate(`/category/${categoryName}`);
+  const onCategorySelected = (categorySlug: string) =>
+    navigate(`/category/${categorySlug}`);
   return (
     <CategoriesDisplay
       categories={Object.values(categories)}

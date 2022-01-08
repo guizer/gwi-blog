@@ -27,8 +27,16 @@ public class Category {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
+    @Column(name = "slug", unique = true, nullable = false)
+    private String slug;
+
+    public Category(String name, String slug) {
+        this.name = name;
+        this.slug = slug;
+    }
+
     public CategoryDto convertToDto() {
-        return new CategoryDto(id, name);
+        return new CategoryDto(id, name, slug);
     }
 
 }

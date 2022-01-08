@@ -27,8 +27,11 @@ public class Tag {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
+    @Column(name = "slug", unique = true, nullable = false)
+    private String slug;
+
     public TagDto convertToDto() {
-        return new TagDto(id, name);
+        return new TagDto(id, name, slug);
     }
 
 }

@@ -84,7 +84,7 @@ public class TestArticleRestController {
 
     @Test
     public void testGetArticlesByCategoryIdRespondWith200() throws Exception {
-        CategoryDto category = new CategoryDto(10, "testCategory");
+        CategoryDto category = new CategoryDto(10, "categoryName", "categorySlug");
         List<ArticleDto> articles = List.of(
             ArticleDto.builder()
                 .id(1)

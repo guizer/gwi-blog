@@ -3,6 +3,8 @@ import Col from 'react-bootstrap/esm/Col';
 import Row from 'react-bootstrap/esm/Row';
 import { Article } from '../type';
 
+const DEFAULT_AUTHOR = 'BOT';
+
 interface ArticleDisplayProps {
   article: Article;
 }
@@ -18,9 +20,12 @@ const ArticleDisplay: FC<ArticleDisplayProps> = ({ article }) => (
       <Col xs={12} sm={6} md={8}>
         <div className="post-content">
           <h2>{article.title}</h2>
-          <span className="publication-date">
-            Published at {new Date(article.publishedAt).toLocaleString()}
-          </span>
+          <div className="publication-date">
+            <div>
+              Published at {new Date(article.publishedAt).toLocaleString()}
+            </div>
+            <div>By {article.author || DEFAULT_AUTHOR}</div>
+          </div>
           <div>{article.content}</div>
         </div>
       </Col>

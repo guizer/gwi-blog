@@ -4,8 +4,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.gwi.blog.dto.CategoryDto;
 import org.gwi.blog.entity.Category;
-import org.gwi.blog.exception.CategoryAlreadyExist;
+import org.gwi.blog.exception.CategoryNameAlreadyExist;
 import org.gwi.blog.exception.CategoryNotFound;
+import org.gwi.blog.exception.CategorySlugAlreadyExist;
 import org.gwi.blog.repository.CategoryRepository;
 import org.gwi.blog.service.ICategoryService;
 import org.springframework.stereotype.Service;
@@ -37,20 +38,27 @@ public class CategoryService implements ICategoryService {
 
     @Transactional
     @Override
-    public CategoryDto createCategory(String name) {
+    public CategoryDto createCategory(String name, String slug) {
         categoryRepository.findByName(name).ifPresent(categoryFound -> {
-            throw new CategoryAlreadyExist(name);
+            throw new CategoryNameAlreadyExist(name);
+        });
+        categoryRepository.findBySlug(slug).ifPresent(categoryFound -> {
+            throw new CategorySlugAlreadyExist(name);
         });
         Category category = new Category();
         category.setName(name);
+        category.setSlug(slug);
         return categoryRepository.save(category).convertToDto();
     }
 
     @Transactional
     @Override
-    public CategoryDto renameCategory(int categoryId, String newName) {
+    public CategoryDto updateCategory(int categoryId, String newName, String newSlug) {
         categoryRepository.findByName(newName).ifPresent(tagFound -> {
-            throw new CategoryAlreadyExist(newName);
+            throw new CategoryNameAlreadyExist(newName);
+        });
+        categoryRepository.findBySlug(newSlug).ifPresent(tagFound -> {
+            throw new CategorySlugAlreadyExist(newSlug);
         });
         Category categoryToRename = categoryRepository.findById(categoryId)
             .orElseThrow(() -> new CategoryNotFound(categoryId));

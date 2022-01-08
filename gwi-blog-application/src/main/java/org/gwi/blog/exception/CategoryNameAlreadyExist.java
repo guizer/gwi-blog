@@ -2,14 +2,14 @@ package org.gwi.blog.exception;
 
 import java.io.Serial;
 
-public class CategoryAlreadyExist extends IllegalArgumentException {
+public class CategoryNameAlreadyExist extends IllegalArgumentException {
 
     @Serial
     private static final long serialVersionUID = 6902544625382069437L;
 
     private final String categoryName;
 
-    public CategoryAlreadyExist(String categoryName) {
+    public CategoryNameAlreadyExist(String categoryName) {
         this.categoryName = categoryName;
     }
 

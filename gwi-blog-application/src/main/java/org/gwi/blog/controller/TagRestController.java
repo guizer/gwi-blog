@@ -4,8 +4,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.gwi.blog.controller.request.CategoryCreationRequest;
 import org.gwi.blog.dto.TagDto;
-import org.gwi.blog.exception.TagAlreadyExist;
+import org.gwi.blog.exception.TagNameAlreadyExist;
 import org.gwi.blog.exception.TagNotFound;
+import org.gwi.blog.exception.TagSlugAlreadyExist;
 import org.gwi.blog.service.ITagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,9 +48,9 @@ public class TagRestController {
 
     @PutMapping("/{tagId}")
     public TagDto renameTag(@PathVariable int tagId,
-                            @RequestBody CategoryCreationRequest renameRequest) {
-        log.info("[GWI-BLOG] Rename tag of id {} to {}", tagId, renameRequest.getName());
-        return tagService.renameTag(tagId, renameRequest.getName());
+                            @RequestBody CategoryCreationRequest updateRequest) {
+        log.info("[GWI-BLOG] Rename tag of id {} to {}", tagId, updateRequest.getName());
+        return tagService.updateTag(tagId, updateRequest.getName(), updateRequest.getSlug());
     }
 
     @DeleteMapping("/{tagId}")
@@ -65,8 +66,14 @@ public class TagRestController {
     }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(TagAlreadyExist.class)
-    public String handleException(TagAlreadyExist exception) {
+    @ExceptionHandler(TagNameAlreadyExist.class)
+    public String handleException(TagNameAlreadyExist exception) {
+        return exception.getMessage();
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(TagSlugAlreadyExist.class)
+    public String handleException(TagSlugAlreadyExist exception) {
         return exception.getMessage();
     }
 

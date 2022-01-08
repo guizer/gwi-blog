@@ -23,16 +23,17 @@ public interface ICategoryService {
     /**
      * Create a category.
      */
-    CategoryDto createCategory(String name);
+    CategoryDto createCategory(String name, String slug);
 
     /**
      * Rename the category with the given id.
      *
      * @param categoryId the category id
      * @param newName    the new category name
+     * @param newName    the new slug name
      * @return the renamed category
      * @throws CategoryNotFound if the category does not exist
      */
-    CategoryDto renameCategory(int categoryId, String newName);
+    CategoryDto updateCategory(int categoryId, String newName, String newSlug);
 
 }
