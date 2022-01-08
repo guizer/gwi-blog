@@ -1,29 +1,33 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { ArticlesDisplay, PagedArticles, useArticleClient } from './articles';
-import Pagination from './pagination';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { ArticlesDisplay, PagedArticles, useArticleClient } from '../articles';
+import { useCategories } from '../categories/context';
+import Pagination from '../pagination';
+import { ARTICLES_PER_PAGE, DEFAULT_PAGE } from './config';
 
-const ARTICLES_PER_PAGE = 5;
-
-const Home: FC = () => {
+const ArticlesByCategory: FC = () => {
   const [pagedArticles, setPagedArticles] = useState<PagedArticles>();
   const articlesClient = useArticleClient();
   const [searchParams, setSearchParams] = useSearchParams();
-  const pageFromUrl = Number(searchParams.get('page') || '1');
-  const [currentPage, setCurrentPage] = useState(pageFromUrl);
+  const { categoryName } = useParams<{ categoryName: string }>();
+  const [categories] = useCategories();
+  const [currentPage, setCurrentPage] = useState(
+    Number(searchParams.get('page') || DEFAULT_PAGE),
+  );
 
   useEffect(() => {
-    if (articlesClient) {
+    if (categoryName && categories[categoryName]) {
       articlesClient
-        .getArticles({
-          page: currentPage.toString(),
-          pageSize: ARTICLES_PER_PAGE.toString(),
+        .getArticlesByCategoryId({
+          categoryId: categories[categoryName].id,
+          page: currentPage,
+          pageSize: ARTICLES_PER_PAGE,
         })
         .then(setPagedArticles)
         // eslint-disable-next-line no-console
         .catch((error) => console.log(error));
     }
-  }, [articlesClient, currentPage]);
+  }, [articlesClient, categories, categoryName, currentPage]);
 
   const paginationProps = useMemo(
     () => ({
@@ -46,4 +50,4 @@ const Home: FC = () => {
   ) : null;
 };
 
-export default Home;
+export default ArticlesByCategory;

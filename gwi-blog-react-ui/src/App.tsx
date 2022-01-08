@@ -14,10 +14,10 @@ const App: FC = () => (
       <Container>
         <CategoryClientContextProvider>
           <CategoriesNav />
+          <ArticleClientContextProvider>
+            <Outlet />
+          </ArticleClientContextProvider>
         </CategoryClientContextProvider>
-        <ArticleClientContextProvider>
-          <Outlet />
-        </ArticleClientContextProvider>
       </Container>
     </div>
 

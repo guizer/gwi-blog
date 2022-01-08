@@ -35,9 +35,4 @@ const CategoriesDisplay: FC<CategoriesDisplayProps> = ({
   </Nav>
 );
 
-CategoriesDisplay.defaultProps = {
-  activeCategory: undefined,
-  onCategorySelected: undefined,
-};
-
 export default CategoriesDisplay;

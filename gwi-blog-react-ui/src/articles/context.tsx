@@ -19,5 +19,8 @@ export const ArticleClientContextProvider: FC = ({ children }) => {
 
 export const useArticleClient = () => {
   const { articleClient } = useContext(ArticleClientContext);
-  return articleClient;
+  if (articleClient) {
+    return articleClient;
+  }
+  throw Error('useArticleClient must be used within a ArticleClientContext');
 };

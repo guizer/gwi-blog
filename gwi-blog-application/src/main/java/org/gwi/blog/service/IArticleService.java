@@ -23,6 +23,11 @@ public interface IArticleService {
     PagedArticles getArticles(int page, int pageSize);
 
     /**
+     * Retrieve the articles of the given category at the given page.
+     */
+    PagedArticles getArticlesByCategoryId(int categoryId, int page, int pageSize);
+
+    /**
      * Delete the article with the given id.
      *
      * @param articleId the article id

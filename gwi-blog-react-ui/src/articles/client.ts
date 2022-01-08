@@ -1,8 +1,15 @@
 import axios from 'axios';
-import { GetArticleArgs, PagedArticles } from './type';
+import {
+  GetArticlesArgs,
+  GetArticlesByCategoryArgs,
+  PagedArticles,
+} from './type';
 
 export interface ArticleClient {
-  getArticles: (args?: GetArticleArgs) => Promise<PagedArticles>;
+  getArticles: (args?: GetArticlesArgs) => Promise<PagedArticles>;
+  getArticlesByCategoryId: (
+    args: GetArticlesByCategoryArgs,
+  ) => Promise<PagedArticles>;
 }
 
 const NAMESPACE = '/api/v1/articles';
@@ -12,9 +19,25 @@ export const createArticleClient = (): ArticleClient => {
     baseURL: 'http://localhost:8080/',
   });
   return {
-    getArticles: (args?: GetArticleArgs) =>
-      httpClient
-        .get<PagedArticles>(NAMESPACE, { params: { ...args } })
-        .then((response) => response.data),
+    getArticles: (args?: GetArticlesArgs) => {
+      const params = args
+        ? { page: args.page?.toString(), pageSize: args.pageSize?.toString() }
+        : {};
+      return httpClient
+        .get<PagedArticles>(NAMESPACE, {
+          params,
+        })
+        .then((response) => response.data);
+    },
+    getArticlesByCategoryId: (args: GetArticlesByCategoryArgs) => {
+      const params = args
+        ? { page: args.page?.toString(), pageSize: args.pageSize?.toString() }
+        : {};
+      return httpClient
+        .get<PagedArticles>(`${NAMESPACE}/category/${args?.categoryId}`, {
+          params,
+        })
+        .then((response) => response.data);
+    },
   };
 };

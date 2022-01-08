@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import java.util.List;
 import org.gwi.blog.TestConfiguration;
 import org.gwi.blog.dto.ArticleDto;
+import org.gwi.blog.dto.CategoryDto;
 import org.gwi.blog.dto.PagedArticles;
 import org.gwi.blog.exception.ArticleNotFound;
 import org.gwi.blog.service.IArticleService;
@@ -74,6 +75,35 @@ public class TestArticleRestController {
         PagedArticles expectedPagedArticles = new PagedArticles(articles, 5, 10);
         Mockito.when(articleService.getArticles(1, 2)).thenReturn(expectedPagedArticles);
         mockMvc.perform(MockMvcRequestBuilders.get(ArticleRestController.NAMESPACE)
+                .param("page", "1")
+                .param("pageSize", "2")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(gson.toJson(expectedPagedArticles)));
+    }
+
+    @Test
+    public void testGetArticlesByCategoryIdRespondWith200() throws Exception {
+        CategoryDto category = new CategoryDto(10, "testCategory");
+        List<ArticleDto> articles = List.of(
+            ArticleDto.builder()
+                .id(1)
+                .title("title")
+                .content("content")
+                .category(category)
+                .build(),
+            ArticleDto.builder()
+                .id(1)
+                .title("title")
+                .content("content")
+                .category(category)
+                .build()
+        );
+        PagedArticles expectedPagedArticles = new PagedArticles(articles, 5, 10);
+        Mockito.when(articleService.getArticlesByCategoryId(category.getId(), 1, 2))
+            .thenReturn(expectedPagedArticles);
+        String restPath = ArticleRestController.NAMESPACE + "/category/" + category.getId();
+            mockMvc.perform(MockMvcRequestBuilders.get(restPath)
                 .param("page", "1")
                 .param("pageSize", "2")
                 .contentType(MediaType.APPLICATION_JSON))

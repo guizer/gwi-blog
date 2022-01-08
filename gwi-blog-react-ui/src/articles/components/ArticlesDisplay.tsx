@@ -9,7 +9,7 @@ interface ArticlesDisplayProps {
 const ArticlesDisplay: FC<ArticlesDisplayProps> = ({ articles }) => (
   <div className="articles">
     {articles.map((article) => (
-      <ArticleDisplay article={article} />
+      <ArticleDisplay key={article.id} article={article} />
     ))}
   </div>
 );
