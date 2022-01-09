@@ -25,7 +25,7 @@ const Pagination: FC<PaginationProps> = ({
     />
     {Array.from({ length: totalPages }, (v, k) => k)
       .filter(
-        (value) => value + 1 >= currentPage - 5 && value + 1 <= currentPage + 5,
+        (value) => value + 1 >= currentPage - 3 && value + 1 <= currentPage + 3,
       )
       .map((value) => (
         <Item

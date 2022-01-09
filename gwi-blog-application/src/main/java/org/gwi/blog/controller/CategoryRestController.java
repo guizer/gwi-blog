@@ -7,8 +7,10 @@ import org.gwi.blog.dto.CategoryDto;
 import org.gwi.blog.exception.CategoryNameAlreadyExist;
 import org.gwi.blog.exception.CategoryNotFound;
 import org.gwi.blog.exception.CategorySlugAlreadyExist;
+import org.gwi.blog.security.Roles;
 import org.gwi.blog.service.ICategoryService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +41,7 @@ public class CategoryRestController {
         return categoryService.getAllCategories();
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public CategoryDto createCategory(@RequestBody CategoryCreationRequest createRequest) {
@@ -46,6 +49,7 @@ public class CategoryRestController {
         return categoryService.createCategory(createRequest.getName(), createRequest.getSlug());
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @PutMapping("/{categoryId}")
     public CategoryDto updateCategory(@PathVariable int categoryId,
                                       @RequestBody CategoryCreationRequest updateRequest) {
@@ -54,6 +58,7 @@ public class CategoryRestController {
             updateRequest.getSlug());
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @DeleteMapping("/{categoryId}")
     public CategoryDto deleteCategory(@PathVariable int categoryId) {
         log.info("[GWI-BLOG] Delete category of id {}", categoryId);
