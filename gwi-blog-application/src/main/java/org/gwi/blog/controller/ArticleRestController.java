@@ -7,9 +7,11 @@ import org.gwi.blog.dto.CommentDto;
 import org.gwi.blog.dto.PagedArticles;
 import org.gwi.blog.dto.PagedComments;
 import org.gwi.blog.exception.ArticleNotFound;
+import org.gwi.blog.security.Roles;
 import org.gwi.blog.service.ArticleCreationRequest;
 import org.gwi.blog.service.IArticleService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,12 +59,14 @@ public class ArticleRestController {
         return articleService.getArticlesByCategoryId(categoryId, page, pageSize);
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @PostMapping
     public ArticleDto createArticle(ArticleCreationRequest creationRequest) {
         log.info("[GWI-BLOG] Create article for request {}", creationRequest);
         return articleService.createArticle(creationRequest);
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @PutMapping("/{articleId}")
     public ArticleDto updateArticle(@PathVariable int articleId,
                                     @RequestBody ArticleCreationRequest updateRequest) {
@@ -70,6 +74,7 @@ public class ArticleRestController {
         return articleService.updateArticle(articleId, updateRequest);
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @DeleteMapping("/{articleId}")
     public ArticleDto deleteArticle(@PathVariable int articleId) {
         log.info("[GWI-BLOG] Delete article of id {}", articleId);

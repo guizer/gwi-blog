@@ -7,8 +7,10 @@ import org.gwi.blog.dto.TagDto;
 import org.gwi.blog.exception.TagNameAlreadyExist;
 import org.gwi.blog.exception.TagNotFound;
 import org.gwi.blog.exception.TagSlugAlreadyExist;
+import org.gwi.blog.security.Roles;
 import org.gwi.blog.service.ITagService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +41,7 @@ public class TagRestController {
         return tagService.getAllTags();
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public TagDto createTag(@RequestBody CategoryCreationRequest createRequest) {
@@ -46,6 +49,7 @@ public class TagRestController {
         return tagService.createTag(createRequest.getName(), createRequest.getSlug());
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @PutMapping("/{tagId}")
     public TagDto renameTag(@PathVariable int tagId,
                             @RequestBody CategoryCreationRequest updateRequest) {
@@ -53,6 +57,7 @@ public class TagRestController {
         return tagService.updateTag(tagId, updateRequest.getName(), updateRequest.getSlug());
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @DeleteMapping("/{tagId}")
     public TagDto deleteTag(@PathVariable int tagId) {
         log.info("[GWI-BLOG] Delete tag of id {}", tagId);
