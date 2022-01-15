@@ -2,6 +2,8 @@
 
 A blog application written Spring Boot and React.JS.
 
+![Capture](app.png)
+
 ## Built with
 
 - React.js
