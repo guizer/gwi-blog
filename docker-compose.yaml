@@ -1,0 +1,16 @@
+version: "3.3"
+services:
+  backend:
+    build:
+      context: ./gwi-blog-backend
+      args:
+        JAR_FILE: build/libs/gwi-blog-backend-1.0-SNAPSHOT.jar
+    image: gwi-blog/gwi-blog-backend:1.0-SNAPSHOT
+    ports:
+      - "8080:8080"
+  react-ui:
+    build:
+      context: ./gwi-blog-react-ui
+    image: gwi-blog/gwi-blog-react-ui:1.0-SNAPSHOT
+    ports:
+      - "3000:80"
